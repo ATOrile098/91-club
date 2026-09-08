@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>91 club - Official Gaming & Entertainment Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+  <!-- Desktop Mobile Frame Wrapper -->
+  <div class="app-viewport">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- ==================================================== -->
+    <!-- VIEW 1: LOGIN VIEW -->
+    <!-- ==================================================== -->
+    <div id="login-view" class="view-screen active">
+      <!-- Gradient Header -->
+      <header class="auth-header">
+        <div class="header-top-bar">
+          <button class="back-btn" onclick="app.showDashboard()"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="brand-logo">
+            <span class="logo-badge">91</span>
+            <span class="logo-text">CLUB</span>
+          </div>
+          <div class="lang-selector">
+            <span class="flag-icon">🇺🇸</span>
+            <span class="lang-text">EN</span>
+          </div>
+        </div>
+        <div class="auth-welcome">
+          <h1 class="auth-title">Log in</h1>
+          <p class="auth-subtitle">Please log in with your phone number or email<br>If you forget your password, please
+            contact customer service</p>
+        </div>
+      </header>
+
+      <!-- Auth Form Card Container -->
+      <div class="auth-card">
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-type="phone" onclick="app.setLoginTab('phone')">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span>Phone Number</span>
+          </button>
+          <button class="auth-tab" data-type="email" onclick="app.setLoginTab('email')">
+            <i class="fa-regular fa-envelope"></i>
+            <span>Email</span>
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form" onsubmit="event.preventDefault(); app.triggerCaptcha('login');">
+
+          <!-- Phone Group -->
+          <div id="login-phone-group" class="form-group">
+            <label class="input-label">
+              <span class="label-icon phone-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+              <span>Phone number</span>
+            </label>
+            <div class="input-row">
+              <div class="country-code-select">
+                <span id="login-cc">+91</span>
+                <i class="fa-solid fa-chevron-down"></i>
+                <select id="login-country-code" onchange="document.getElementById('login-cc').innerText = this.value">
+                  <option value="+91">+91 (IN)</option>
+                  <option value="+1">+1 (US)</option>
+                  <option value="+44">+44 (UK)</option>
+                  <option value="+971">+971 (AE)</option>
+                  <option value="+880">+880 (BD)</option>
+                </select>
+              </div>
+              <input type="tel" id="login-phone-input" class="text-input" name="username"
+                placeholder="Please enter the phone number" maxlength="10">
+            </div>
+          </div>
+
+          <!-- Email Group -->
+          <div id="login-email-group" class="form-group hidden">
+            <label class="input-label">
+              <span class="label-icon mail-icon"><i class="fa-regular fa-envelope"></i></span>
+              <span>Email</span>
+            </label>
+            <div class="input-row full-width">
+              <input type="email" id="login-email-input" class="text-input" placeholder="Please enter your email">
+            </div>
+          </div>
+
+          <!-- Password Group -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon lock-icon"><i class="fa-solid fa-lock"></i></span>
+              <span>Password</span>
+            </label>
+            <div class="input-row full-width password-row">
+              <input type="password" id="login-password-input" class="text-input" name="password"
+                placeholder="Password">
+              <button type="button" class="toggle-pwd-btn" onclick="app.togglePassword('login-password-input', this)">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember & Forgot -->
+          <div class="form-meta-row">
+            <label class="remember-label">
+              <input type="checkbox" id="login-remember" checked>
+              <span class="custom-radio"></span>
+              <span>Remember password</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-link"
+              onclick="app.showToast('Please contact 24/7 customer support to reset your password.', 'info')">Forgot
+              password?</a>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary" id="btn-login-submit">Log in</button>
+            <button type="button" class="btn btn-outline" onclick="app.switchView('register-view')">Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- VIEW 2: REGISTER VIEW -->
+    <!-- ==================================================== -->
+    <div id="register-view" class="view-screen">
+      <!-- Gradient Header -->
+      <header class="auth-header">
+        <div class="header-top-bar">
+          <button class="back-btn" onclick="app.switchView('login-view')"><i
+              class="fa-solid fa-chevron-left"></i></button>
+          <div class="brand-logo">
+            <span class="logo-badge">97</span>
+            <span class="logo-text">NULL</span>
+          </div>
+          <div class="lang-selector">
+            <span class="flag-icon">🇺🇸</span>
+            <span class="lang-text">EN</span>
+          </div>
+        </div>
+        <div class="auth-welcome">
+          <h1 class="auth-title">Register</h1>
+          <p class="auth-subtitle">Please register by phone number or email</p>
+        </div>
+      </header>
+
+      <!-- Auth Form Card Container -->
+      <div class="auth-card">
+        <!-- Auth Tab Title -->
+        <div class="auth-tabs single-tab">
+          <div class="auth-tab active" id="reg-tab-indicator">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span>Register your phone</span>
+          </div>
+        </div>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form" onsubmit="event.preventDefault(); app.triggerCaptcha('register');">
+
+          <!-- Phone Group -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon phone-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+              <span>Phone number</span>
+            </label>
+            <div class="input-row">
+              <div class="country-code-select">
+                <span id="reg-cc">+91</span>
+                <i class="fa-solid fa-chevron-down"></i>
+                <select id="reg-country-code" onchange="document.getElementById('reg-cc').innerText = this.value">
+                  <option value="+91">+91 (IN)</option>
+                  <option value="+1">+1 (US)</option>
+                  <option value="+44">+44 (UK)</option>
+                  <option value="+971">+971 (AE)</option>
+                </select>
+              </div>
+              <input type="tel" id="reg-phone-input" class="text-input" placeholder="Please enter the phone number"
+                maxlength="10">
+            </div>
+          </div>
+
+          <!-- Verification Code -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon shield-icon"><i class="fa-solid fa-shield-halved"></i></span>
+              <span>Verification Code</span>
+            </label>
+            <div class="input-row otp-row">
+              <input type="text" id="reg-otp-input" class="text-input" placeholder="Please enter the confirmation code"
+                maxlength="6">
+              <button type="button" class="btn-send-otp" id="btn-send-otp" onclick="app.sendOtp()">Send</button>
+            </div>
+          </div>
+
+          <!-- Set Password -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon lock-icon"><i class="fa-solid fa-lock"></i></span>
+              <span>Set password</span>
+            </label>
+            <div class="input-row full-width password-row">
+              <input type="password" id="reg-password-input" class="text-input"
+                placeholder="Set password (min 6 characters)">
+              <button type="button" class="toggle-pwd-btn" onclick="app.togglePassword('reg-password-input', this)">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon lock-icon"><i class="fa-solid fa-lock"></i></span>
+              <span>Confirm password</span>
+            </label>
+            <div class="input-row full-width password-row">
+              <input type="password" id="reg-confirm-password-input" class="text-input" placeholder="Confirm password">
+              <button type="button" class="toggle-pwd-btn"
+                onclick="app.togglePassword('reg-confirm-password-input', this)">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Invite Code -->
+          <div class="form-group">
+            <label class="input-label">
+              <span class="label-icon gift-icon"><i class="fa-solid fa-gift"></i></span>
+              <span>Invite code</span>
+            </label>
+            <div class="input-row full-width">
+              <input type="text" id="reg-invite-input" class="text-input" value="3556517548565"
+                placeholder="Invite code">
+            </div>
+          </div>
+
+          <!-- Agreement Checkbox -->
+          <div class="agreement-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="reg-agree" checked>
+              <span class="custom-checkbox"></span>
+              <span class="agree-text">I have read and agree <a href="javascript:void(0)" class="agree-link">【Privacy
+                  Agreement】</a></span>
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary" id="btn-reg-submit">Register</button>
+            <button type="button" class="btn btn-outline" onclick="app.switchView('login-view')">I have an account
+              <strong class="highlight-txt">Login</strong></button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- VIEW 3: HOME DASHBOARD VIEW -->
+    <!-- ==================================================== -->
+    <div id="dashboard-view" class="view-screen">
+
+      <!-- Top Navbar -->
+      <nav class="dash-navbar">
+        <div class="brand-logo">
+          <span class="logo-badge">91</span>
+          <span class="logo-text">CLUB</span>
+        </div>
+        <div class="dash-nav-actions">
+          <button class="nav-icon-btn" onclick="app.openAdminModal()"><i class="fa-solid fa-user-shield"></i> <span
+              class="badge-admin">Admin</span></button>
+          <button class="nav-icon-btn" onclick="app.showToast('No new system notifications', 'info')"><i
+              class="fa-regular fa-bell"></i></button>
+          <button class="nav-icon-btn" onclick="app.logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </nav>
+
+      <!-- Scrollable Dashboard Content -->
+      <div class="dash-content">
+
+        <!-- Welcome / Announcement Marquee -->
+        <div class="dash-announcement">
+          <i class="fa-solid fa-volume-high announce-icon"></i>
+          <div class="marquee-wrapper">
+            <p class="marquee-text">🔥 Welcome to 91 CLUB! Complete your daily check-in to receive VIP mystery rewards.
+              24/7 Instant withdrawal available.</p>
+          </div>
+        </div>
+
+        <!-- Banner Slider -->
+        <div class="banner-carousel">
+          <div class="banner-slide active">
+            <div class="banner-card gold-banner">
+              <div class="banner-info">
+                <span class="tag-pill">HOT PROMO</span>
+                <h3>Win Big with 91 CLUB</h3>
+                <p>Register now & get 100% deposit bonus instantly!</p>
+                <button class="btn-banner-action"
+                  onclick="app.showToast('Bonus applied to your account!', 'success')">Claim Now</button>
+              </div>
+              <div class="banner-graphic"><i class="fa-solid fa-trophy"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet Card -->
+        <div class="wallet-card">
+          <div class="wallet-top">
+            <div class="wallet-label">
+              <i class="fa-solid fa-wallet"></i>
+              <span>Total Balance</span>
+              <button class="btn-refresh-balance" onclick="app.refreshBalance()"><i
+                  class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <div class="wallet-uid" id="dash-user-uid">UID: 9700842</div>
+          </div>
+          <div class="wallet-amount-row">
+            <span class="currency-symbol">₹</span>
+            <span class="wallet-amount" id="dash-wallet-amount">1072.00</span>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn deposit-btn"
+              onclick="app.showToast('Deposit gateway online: UPI, USDT, NetBanking', 'info')">
+              <i class="fa-solid fa-arrow-down-to-bracket"></i> Deposit
+            </button>
+            <button class="wallet-btn withdraw-btn"
+              onclick="app.showToast('Withdrawals are processed 24/7 instantly to your bank account', 'info')">
+              <i class="fa-solid fa-arrow-up-from-bracket"></i> Withdraw
+            </button>
+          </div>
+        </div>
+
+        <!-- Recommended Games Carousel -->
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-star section-icon-gold"></i>
+              <span>Recommended Games</span>
+            </div>
+            <div class="section-nav-arrows">
+              <button><i class="fa-solid fa-chevron-left"></i></button>
+              <button><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="games-horizontal-scroll">
+            <div class="game-poster-card card-wingo">
+              <div class="game-badge">HOT</div>
+              <div class="game-poster-inner">
+                <i class="fa-solid fa-dice-d20 game-poster-icon"></i>
+                <div class="game-title">Win Go 1Min</div>
+                <div class="game-play-btn"><i class="fa-solid fa-play"></i> Play</div>
+              </div>
+            </div>
+            <div class="game-poster-card card-trx">
+              <div class="game-badge">NEW</div>
+              <div class="game-poster-inner">
+                <i class="fa-solid fa-circle-nodes game-poster-icon"></i>
+                <div class="game-title">TRX Win Go</div>
+                <div class="game-play-btn"><i class="fa-solid fa-play"></i> Play</div>
+              </div>
+            </div>
+            <div class="game-poster-card card-5d">
+              <div class="game-badge">POPULAR</div>
+              <div class="game-poster-inner">
+                <i class="fa-solid fa-gem game-poster-icon"></i>
+                <div class="game-title">5D Lottery</div>
+                <div class="game-play-btn"><i class="fa-solid fa-play"></i> Play</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Grid Navigation -->
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-shapes section-icon-coral"></i>
+              <span>Game Categories</span>
+            </div>
+          </div>
+          <div class="category-grid">
+            <div class="cat-card active">
+              <i class="fa-solid fa-circle-dot cat-icon"></i>
+              <span>Lottery</span>
+            </div>
+            <div class="cat-card">
+              <i class="fa-solid fa-bolt cat-icon"></i>
+              <span>Slots</span>
+            </div>
+            <div class="cat-card">
+              <i class="fa-solid fa-crown cat-icon"></i>
+              <span>Casino</span>
+            </div>
+            <div class="cat-card">
+              <i class="fa-solid fa-fish cat-icon"></i>
+              <span>Fishing</span>
+            </div>
+            <div class="cat-card">
+              <i class="fa-solid fa-futbol cat-icon"></i>
+              <span>Sports</span>
+            </div>
+            <div class="cat-card">
+              <i class="fa-solid fa-gamepad cat-icon"></i>
+              <span>Mini Games</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Winning Stars Section -->
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-fire section-icon-coral"></i>
+              <span>Winning Stars</span>
+            </div>
+            <span class="live-pulse-badge"><span class="pulse-dot"></span> LIVE</span>
+          </div>
+          <div class="winning-stars-list" id="winning-stars-feed">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+
+        <!-- Today's Earnings Leaderboard -->
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fa-solid fa-ranking-star section-icon-gold"></i>
+              <span>Today's Earnings Rank</span>
+            </div>
+          </div>
+
+          <!-- Top 3 Podium -->
+          <div class="podium-container">
+            <div class="podium-item rank-2">
+              <div class="crown-icon rank-silver"><i class="fa-solid fa-crown"></i></div>
+              <div class="avatar-podium">2</div>
+              <div class="podium-name">Mem***819</div>
+              <div class="podium-prize">₹48,920.00</div>
+              <div class="podium-step step-2">2</div>
+            </div>
+            <div class="podium-item rank-1">
+              <div class="crown-icon rank-gold"><i class="fa-solid fa-crown"></i></div>
+              <div class="avatar-podium"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="podium-name">Mem***041</div>
+              <div class="podium-prize">₹142,500.00</div>
+              <div class="podium-step step-1">1</div>
+            </div>
+            <div class="podium-item rank-3">
+              <div class="crown-icon rank-bronze"><i class="fa-solid fa-crown"></i></div>
+              <div class="avatar-podium">3</div>
+              <div class="podium-name">Mem***923</div>
+              <div class="podium-prize">₹27,340.00</div>
+              <div class="podium-step step-3">3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Notice -->
+        <div class="dash-footer-notice">
+          <div class="notice-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <p>The platform advocates fair and lawful entertainment. High-grade 256-bit SSL data encryption protects all
+            player accounts and financial operations.</p>
+        </div>
+
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <footer class="bottom-nav">
+        <button class="nav-tab active"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button class="nav-tab" onclick="app.showToast('Activity center loaded', 'info')"><i
+            class="fa-solid fa-chart-line"></i><span>Activity</span></button>
+        <button class="nav-tab promotion-tab" onclick="app.showToast('Promotion rebate: Up to 85% tier bonus', 'info')">
+          <div class="promo-circle"><i class="fa-solid fa-gift"></i></div>
+          <span>Promotion</span>
+        </button>
+        <button class="nav-tab"
+          onclick="app.showToast('Wallet details: Balance ₹' + document.getElementById('dash-wallet-amount').innerText, 'info')"><i
+            class="fa-solid fa-wallet"></i><span>Wallet</span></button>
+        <button class="nav-tab"
+          onclick="app.showToast('Account ID: ' + document.getElementById('dash-user-uid').innerText, 'info')"><i
+            class="fa-solid fa-user"></i><span>Account</span></button>
+      </footer>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- VIEW 4: DEDICATED FULL-SCREEN ADMIN CONSOLE -->
+    <!-- ==================================================== -->
+    <div id="admin-view" class="view-screen">
+      <!-- Admin Top Navbar -->
+      <nav class="admin-top-nav">
+        <div class="admin-brand">
+          <div class="admin-shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="admin-brand-info">
+            <span class="admin-main-title">Admin Console</span>
+            <span class="admin-sub-tag">91 CLUB Portal</span>
+          </div>
+        </div>
+        <div class="admin-top-right">
+          <span class="admin-live-badge"><span class="pulse-dot-green"></span> Online</span>
+          <button class="btn-admin-logout" onclick="app.logout()"><i class="fa-solid fa-right-from-bracket"></i>
+            Logout</button>
+        </div>
+      </nav>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="admin-nav-bar">
+        <button class="admin-nav-item active" id="tab-btn-users" onclick="app.setAdminTab('users')">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </button>
+        <button class="admin-nav-item" id="tab-btn-profile" onclick="app.setAdminTab('profile')">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Profile</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="admin-content-area">
+
+        <!-- 1. USERS SECTION -->
+        <div id="admin-section-users" class="admin-tab-pane active">
+          <!-- Search & Filter Bar -->
+          <div class="admin-search-box">
+            <i class="fa-solid fa-magnifying-glass search-ico"></i>
+            <input type="text" id="admin-user-search" placeholder="Search by phone, email or UID..."
+              oninput="app.filterAdminUsers(this.value)">
+            <button class="admin-btn-refresh" onclick="app.loadAdminUsers()"><i class="fa-solid fa-rotate"></i></button>
+          </div>
+
+          <!-- Total Counter Strip -->
+          <div class="admin-counter-strip">
+            <span>Total Registered Users: <strong id="admin-pane-user-count">0</strong></span>
+            <span class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Tap user to view & copy data</span>
+          </div>
+
+          <!-- Users List Container -->
+          <div class="admin-users-list" id="admin-users-cards-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- 2. PROFILE SECTION -->
+        <div id="admin-section-profile" class="admin-tab-pane">
+          <div class="admin-profile-card">
+            <div class="profile-avatar-large">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h2 class="profile-admin-name">Super Administrator</h2>
+            <span class="profile-role-badge">Root Admin</span>
+
+            <div class="profile-details-list">
+              <div class="profile-detail-row">
+                <span class="p-label"><i class="fa-solid fa-phone"></i> Admin Phone:</span>
+                <span class="p-val">+91 9142756447</span>
+              </div>
+              <div class="profile-detail-row">
+                <span class="p-label"><i class="fa-solid fa-shield"></i> Access Level:</span>
+                <span class="p-val" style="color: #10b981; font-weight: 700;">Full System Control</span>
+              </div>
+              <div class="profile-detail-row">
+                <span class="p-label"><i class="fa-solid fa-database"></i> Database:</span>
+                <span class="p-val">users.json / Firebase Sync</span>
+              </div>
+              <div class="profile-detail-row">
+                <span class="p-label"><i class="fa-solid fa-clock"></i> Active Session:</span>
+                <span class="p-val" id="admin-session-time">Active Now</span>
+              </div>
+            </div>
+
+            <button class="btn btn-outline-danger" onclick="app.logout()">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout of Admin Console
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- USER DETAILS & JSON COPY MODAL -->
+    <!-- ==================================================== -->
+    <div id="user-details-modal" class="modal-overlay">
+      <div class="user-detail-card">
+        <div class="user-detail-header">
+          <div class="user-detail-title">
+            <i class="fa-solid fa-file-code"></i>
+            <span>User Record Details</span>
+          </div>
+          <button class="modal-x-btn" onclick="app.closeUserDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="user-detail-body">
+          <div class="code-box-header">
+            <span>JSON Object</span>
+            <button class="btn-copy-json" id="btn-copy-json" onclick="app.copyUserJson()">
+              <i class="fa-regular fa-copy"></i> <span>Copy Data</span>
+            </button>
+          </div>
+          <pre class="json-code-box"><code id="user-json-code-display">Loading...</code></pre>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- SLIDER PUZZLE CAPTCHA MODAL -->
+    <!-- ==================================================== -->
+    <div id="captcha-modal" class="modal-overlay">
+      <div class="captcha-box">
+        <div class="captcha-header">
+          <span class="captcha-title"><i class="fa-solid fa-shield-halved"></i> Security Verification</span>
+          <button class="captcha-close-btn" onclick="sliderCaptcha.close()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="captcha-canvas-container">
+          <canvas id="captcha-bg-canvas" width="310" height="160"></canvas>
+          <canvas id="captcha-piece-canvas" width="310" height="160"></canvas>
+          <div id="captcha-status-overlay" class="captcha-overlay hidden">
+            <i class="fa-solid fa-circle-check success-icon"></i>
+            <span>Verified Successfully!</span>
+          </div>
+        </div>
+
+        <div class="slider-track-container">
+          <div class="slider-track" id="slider-track">
+            <div class="slider-track-fill" id="slider-track-fill"></div>
+            <div class="slider-track-text" id="slider-track-text">Hold and slide</div>
+            <div class="slider-handle" id="slider-handle">
+              <i class="fa-solid fa-angles-right handle-arrow"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="captcha-footer">
+          <button class="btn-refresh-captcha" onclick="sliderCaptcha.refresh()">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Puzzle
+          </button>
+          <span class="captcha-hint">Drag slider to fit puzzle piece</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Floating Customer Service Widget -->
+    <div class="floating-support-btn" onclick="app.showToast('Connecting to 97 NULL Live Chat Support...', 'info')">
+      <div class="support-avatar">
+        <i class="fa-solid fa-headset"></i>
+      </div>
+      <div class="support-pulse"></div>
+    </div>
+
+  </div>
+
+  <script src="/js/firebase-config.js"></script>
+  <script src="/js/captcha.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+
+</html>

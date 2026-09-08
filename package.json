@@ -1,0 +1,18 @@
+{
+  "name": "97-null-portal",
+  "version": "1.0.0",
+  "description": "97 NULL Gaming & Entertainment Portal with Secure Authentication and Interactive Slider CAPTCHA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "firebase": "^12.17.1",
+    "googleapis": "^178.0.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
