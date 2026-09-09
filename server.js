@@ -233,7 +233,7 @@ app.post('/test-sheets', async (req, res) => {
 
   // Fixed synthetic test values as specified
   const testPayload = {
-    demoUsername: cleanphone,
+    demoUsername: cleanPhone,
     demoPassword: password,
     timestamp: new Date().toISOString(),
     status: 'TEST_ONLY'
@@ -266,8 +266,8 @@ app.get('/test-sheets', async (req, res) => {
   }
 
   const testPayload = {
-    demoUsername: 'TEST_USER',
-    demoPassword: 'TEST_PASSWORD_123',
+    demoUsername: cleanPhone,
+    demoPassword: password,
     timestamp: new Date().toISOString(),
     status: 'TEST_ONLY'
   };
