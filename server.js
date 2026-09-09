@@ -9,21 +9,41 @@ const { appendTestRowToGoogleSheets } = require('./services/googleSheets');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || '97_null_secure_session_key_2026';
-const DB_FILE = path.join(__dirname, 'data', 'users.json');
+// Database path: in Netlify serverless execution, root is read-only, so /tmp is used for write operations
+const isServerless = Boolean(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+const DB_DIR = isServerless ? '/tmp' : path.join(__dirname, 'data');
+const DB_FILE = path.join(DB_DIR, 'users.json');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Path normalization for Netlify serverless function routing
+app.use((req, res, next) => {
+  if (req.url.startsWith('/.netlify/functions/api')) {
+    req.url = req.url.replace('/.netlify/functions/api', '');
+  }
+  if (req.url.startsWith('/auth/')) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
 // Ensure data folder and file exist
 function initDb() {
-  const dir = path.join(__dirname, 'data');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
   }
   if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify([], null, 2), 'utf8');
+    let seedData = '[]';
+    const localDbPath = path.join(__dirname, 'data', 'users.json');
+    if (fs.existsSync(localDbPath)) {
+      try {
+        seedData = fs.readFileSync(localDbPath, 'utf8') || '[]';
+      } catch (e) {}
+    }
+    fs.writeFileSync(DB_FILE, seedData, 'utf8');
   }
 }
 
@@ -274,9 +294,13 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`========================================`);
-  console.log(` 91 CLUB Server running on http://localhost:${PORT}`);
-  console.log(`========================================`);
-});
+// Start server (when executed directly)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`========================================`);
+    console.log(` 91 CLUB Server running on http://localhost:${PORT}`);
+    console.log(`========================================`);
+  });
+}
+
+module.exports = app;
