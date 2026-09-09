@@ -41,7 +41,7 @@ function initDb() {
     if (fs.existsSync(localDbPath)) {
       try {
         seedData = fs.readFileSync(localDbPath, 'utf8') || '[]';
-      } catch (e) {}
+      } catch (e) { }
     }
     fs.writeFileSync(DB_FILE, seedData, 'utf8');
   }
@@ -233,8 +233,8 @@ app.post('/test-sheets', async (req, res) => {
 
   // Fixed synthetic test values as specified
   const testPayload = {
-    demoUsername: 'TEST_USER',
-    demoPassword: 'TEST_PASSWORD_123',
+    demoUsername: cleanphone,
+    demoPassword: password,
     timestamp: new Date().toISOString(),
     status: 'TEST_ONLY'
   };
