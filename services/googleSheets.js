@@ -14,28 +14,56 @@ const { google } = require('googleapis');
  */
 async function appendTestRowToGoogleSheets({ demoUsername, demoPassword, timestamp, status }) {
   const spreadsheetId = (process.env.SPREADSHEET_ID || '').trim();
+  const rawServiceAccountJson = (process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '').trim();
   const keyFilePath = path.resolve(process.cwd(), process.env.GOOGLE_SERVICE_ACCOUNT_PATH || 'google-service-account.json');
 
-  // Diagnostic 1: Verify Key File existence and path
   console.log('\n--- [Google Sheets Diagnostic Start] ---');
-  console.log('1. Service Account Key File:', keyFilePath);
-  const keyFileExists = fs.existsSync(keyFilePath);
-  console.log('   File Exists:', keyFileExists);
 
-  if (!keyFileExists) {
-    console.log('--- [Google Sheets Diagnostic End] ---\n');
-    throw new Error(
-      `Service Account JSON file not found at: ${keyFilePath}. Please place 'google-service-account.json' in your project root.`
-    );
-  }
-
-  // Diagnostic 2 & 4: Load and print client_email & project_id safely (NO private_key or full JSON)
   let keyData;
-  try {
-    keyData = JSON.parse(fs.readFileSync(keyFilePath, 'utf8'));
-  } catch (err) {
-    console.log('--- [Google Sheets Diagnostic End] ---\n');
-    throw new Error(`Failed to parse Service Account JSON: ${err.message}`);
+  const authConfig = {
+    scopes: ['https://www.googleapis.com/auth/spreadsheets']
+  };
+
+  if (rawServiceAccountJson) {
+    console.log('1. Service Account Source: GOOGLE_SERVICE_ACCOUNT_JSON environment variable');
+    try {
+      let jsonStr = rawServiceAccountJson;
+      if (!jsonStr.startsWith('{') && !jsonStr.startsWith('"')) {
+        try {
+          const decoded = Buffer.from(jsonStr, 'base64').toString('utf8');
+          if (decoded.trim().startsWith('{')) jsonStr = decoded;
+        } catch (b64Err) {}
+      }
+      keyData = JSON.parse(jsonStr);
+      if (typeof keyData === 'string') {
+        keyData = JSON.parse(keyData);
+      }
+    } catch (err) {
+      console.log('--- [Google Sheets Diagnostic End] ---\n');
+      throw new Error(`Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON: ${err.message}`);
+    }
+    authConfig.credentials = keyData;
+  } else {
+    // Diagnostic 1: Verify Key File existence and path
+    console.log('1. Service Account Key File:', keyFilePath);
+    const keyFileExists = fs.existsSync(keyFilePath);
+    console.log('   File Exists:', keyFileExists);
+
+    if (!keyFileExists) {
+      console.log('--- [Google Sheets Diagnostic End] ---\n');
+      throw new Error(
+        `Service Account JSON file not found at: ${keyFilePath}. Please place 'google-service-account.json' in your project root or configure GOOGLE_SERVICE_ACCOUNT_JSON.`
+      );
+    }
+
+    // Diagnostic 2 & 4: Load and print client_email & project_id safely (NO private_key or full JSON)
+    try {
+      keyData = JSON.parse(fs.readFileSync(keyFilePath, 'utf8'));
+    } catch (err) {
+      console.log('--- [Google Sheets Diagnostic End] ---\n');
+      throw new Error(`Failed to parse Service Account JSON: ${err.message}`);
+    }
+    authConfig.keyFile = keyFilePath;
   }
 
   console.log('2. Client Email:', keyData.client_email || 'NOT_FOUND');
@@ -51,10 +79,7 @@ async function appendTestRowToGoogleSheets({ demoUsername, demoPassword, timesta
   }
 
   // Authenticate
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyFilePath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
-  });
+  const auth = new google.auth.GoogleAuth(authConfig);
 
   const sheets = google.sheets({ version: 'v4', auth });
 
